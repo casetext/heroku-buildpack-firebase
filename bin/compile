@@ -40,6 +40,11 @@ export_env_dir $ENV_DIR
 
 if [ -n "${FIREBASE_URL-}" ]; then
   info "FIREBASE_URL is already set, nothing to do."
+elif [ -f "${CACHE_DIR}/firebase/profile.sh" ]; then
+  info "We already made a Firebase for this app; restoring .profile.d/firebase.sh"
+  mkdir -p "${BUILD_DIR}/.profile.d"
+  cp "${CACHE_DIR}/firebase/profile.sh" "${BUILD_DIR}/.profile.d/firebase.sh"
+  source "${BUILD_DIR}/.profile.d/firebase.sh"
 else
 
   if [ -z "${FIREBASE_ADMIN_USER-}" ]; then
