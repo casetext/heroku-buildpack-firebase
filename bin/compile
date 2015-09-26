@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+### Configure environment
+
+set -o errexit    # always exit on error
+set -o pipefail   # don't ignore exit codes when piping output
+set -o nounset    # fail on unset variables
+unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
+set -e
+
+### Configure directories
+
+BUILD_DIR=${1:-}
+CACHE_DIR=${2:-}
+ENV_DIR=${3:-}
+BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
+
+### Load dependencies
+
+source $BP_DIR/lib/output.sh
+source $BP_DIR/lib/jq.sh
+source $BP_DIR/lib/failure.sh
+source $BP_DIR/lib/environment.sh
+source $BP_DIR/lib/firebase.sh
+
+### Handle errors
+
+handle_failure() {
+  header "Build failed"
+  failure_message | indent
+}
+trap 'handle_failure' ERR
+
+### Get environment
+
+export_env_dir $ENV_DIR
+
+### Compile
+
+if [ -n "${FIREBASE_URL-}" ]; then
+  info "FIREBASE_URL is already set, nothing to do."
+else
+
+  if [ -z "${FIREBASE_ADMIN_USER-}" ]; then
+    echoerr "FIREBASE_ADMIN_USER is not present in this app's environment."
+    exit 1
+  elif [ -z "${FIREBASE_ADMIN_PASS-}" ]; then
+    echoerr "FIREBASE_ADMIN_PASS is not present in this app's environment."
+    exit 1
+  fi
+
+  export FB_NAME=`get_new_firebase_name`
+
+  header "Creating new Firebase \"$FB_NAME\""
+  FIREBASE_ADMIN_TOKEN=`get_firebase_admin_token $FIREBASE_ADMIN_USER $FIREBASE_ADMIN_PASS`
+  export FIREBASE_URL=`create_firebase $FIREBASE_ADMIN_TOKEN $FB_NAME`
+
+  header "Getting auth secret for new Firebase \"$FB_NAME\""
+  FIREBASE_PERSONAL_TOKEN=`get_firebase_personal_token $FIREBASE_ADMIN_TOKEN $FB_NAME`
+  export FIREBASE_AUTH_SECRET=`get_firebase_custom_auth_token $FIREBASE_PERSONAL_TOKEN $FB_NAME`
+
+  header "Writing profile"
+  write_profile $BUILD_DIR
+
+fi
+
+header "This app will use Firebase $FIREBASE_URL."

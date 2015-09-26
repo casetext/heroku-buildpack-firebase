@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# See README.md for info on running these tests.
+
+# Utils
+
+pushd $(dirname 0) >/dev/null
+popd >/dev/null
+
+source $(pwd)/lib/firebase.sh
+source $(pwd)/test/utils
+
+BUILDPACK_HOME=`pwd`
+
+testFirebaseUrlAlreadySet() {
+
+  echo "foo.firebaseio.com" > ${ENV_DIR}/FIREBASE_URL
+  compile
+  assertCaptured "FIREBASE_URL is already set, nothing to do."
+  assertCaptured "This app will use Firebase foo.firebaseio.com."
+  assertCapturedSuccess
+}
+
+testFirebaseAdminUserNotSupplied() {
+
+  compile
+  assertCapturedError 1 "FIREBASE_ADMIN_USER is not present in this app's environment."
+
+}
+
+testFirebaseAdminPassNotSupplied() {
+
+  echo -n "example-999@invalid.com" > ${ENV_DIR}/FIREBASE_ADMIN_USER
+  compile
+  assertCapturedError 1 "FIREBASE_ADMIN_PASS is not present in this app's environment."
+
+}
+
+testBadFirebaseCredentialsSupplied() {
+
+  echo -n "example-999@invalid.com" > ${ENV_DIR}/FIREBASE_ADMIN_USER
+  echo -n "not a valid password." > ${ENV_DIR}/FIREBASE_ADMIN_PASS
+  compile
+  assertCapturedError 1 "Invalid email or password supplied for \"example-999@invalid.com\"."
+
+}
+
+testEverythingIsSwell() {
+
+  echo -n "${FIREBASE_TEST_ADMIN_USER}" > ${ENV_DIR}/FIREBASE_ADMIN_USER
+  echo -n "${FIREBASE_TEST_ADMIN_PASS}" > ${ENV_DIR}/FIREBASE_ADMIN_PASS
+  compile
+
+  assertFileContains "export FB_NAME" "${BUILD_DIR}/.profile.d/firebase.sh"
+  assertFileContains "export FIREBASE_URL" "${BUILD_DIR}/.profile.d/firebase.sh"
+  assertFileContains "export FIREBASE_AUTH_SECRET" "${BUILD_DIR}/.profile.d/firebase.sh"
+
+
+  assertCapturedSuccess
+
+  # we have to remove the Firebase we created as a result of this test.
+  echo "Now removing the Firebase created for this test."
+  export BP_DIR=`pwd`
+  source $(pwd)/lib/jq.sh
+  source ${BUILD_DIR}/.profile.d/firebase.sh
+  FIREBASE_ADMIN_TOKEN=`get_firebase_admin_token $FIREBASE_TEST_ADMIN_USER $FIREBASE_TEST_ADMIN_PASS`
+  remove_firebase $FIREBASE_ADMIN_TOKEN $FB_NAME
+
+}
+
+source $(pwd)/test/shunit2
