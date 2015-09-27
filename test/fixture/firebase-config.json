@@ -1,0 +1,40 @@
+{
+  "domains": [],
+  "sessionLengthSeconds": 123456,
+  "anonymous": {
+    "enabled": false
+  },
+  "facebook": {
+    "enabled": false,
+    "key": "",
+    "secret": ""
+  },
+  "github": {
+    "enabled": false,
+    "key": "",
+    "secret": ""
+  },
+  "google": {
+    "enabled": false,
+    "key": "",
+    "secret": ""
+  },
+  "password": {
+    "enabled": false,
+    "emails": {
+      "password-reset": {
+        "from": "@asdfasdfadsfasdfasdf.firebaseapp.com",
+        "fromname": "",
+        "replyto": "",
+        "subject": "",
+        "template": "Hello!\n\nIt looks like you've forgotten your password.\n\nUse the following temporary password within the next 24 hours to log in and update your account: %TOKEN%\n\nThanks!",
+        "format": "plainText"
+      }
+    }
+  },
+  "twitter": {
+    "enabled": false,
+    "key": "",
+    "secret": ""
+  }
+}

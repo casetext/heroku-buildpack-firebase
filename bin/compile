@@ -70,4 +70,9 @@ else
 
 fi
 
+if [ -e "${BUILD_DIR}/firebase-config.json" ]; then
+  header "Restoring auth config from firebase-config.json"
+  set_firebase_auth_config $FIREBASE_ADMIN_TOKEN $FB_NAME "${BUILD_DIR}/firebase-config.json"
+fi
+
 header "This app will use Firebase $FIREBASE_URL."

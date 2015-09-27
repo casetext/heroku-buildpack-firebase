@@ -125,3 +125,26 @@ get_firebase_personal_token() {
   fi
 
 }
+
+set_firebase_auth_config() {
+
+  local admin_token="${1-}"
+  local firebase_name="${2-}"
+  local auth_config_file="${3-}"
+  local TMPDIR=${TMPDIR:-/tmp}
+  local tmpfile=`mktemp -t firebase.output.XXXX`
+
+  curl -sS "https://admin.firebase.com/firebase/$firebase_name/authConfig" \
+    --data-urlencode token="$admin_token" \
+    --data-urlencode authConfig="$(cat $auth_config_file)" \
+    --data-urlencode _method=PUT > $tmpfile
+
+  local error=`$JQ -rM .error?.message? $tmpfile`
+  if [ "$error" != "null" ]; then
+    echoerr "Error restoring auth config: $error"
+    return 1
+  else
+    return 0
+  fi
+
+}
