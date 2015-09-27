@@ -1,5 +1,8 @@
 # Firebase Buildpack Changelog
 
+## v2 (2015-09-27)
+- Forgot to echo in the build/detect program. Oops.
+
 ## v1 (2015-09-24)
 
 Initial release, based on [heroku-buildpack-nodejs](https://github.com/heroku/heroku-buildpack-nodejs).

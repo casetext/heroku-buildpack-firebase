@@ -2,4 +2,5 @@
 # bin/detect <build-dir>
 
 # we always run.
+echo "Firebase"
 exit 0
