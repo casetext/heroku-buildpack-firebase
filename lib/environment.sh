@@ -19,9 +19,7 @@ write_profile() {
   local profile_dir=$build_dir/.profile.d
   local profile_file="$profile_dir/firebase.sh"
   mkdir -p $profile_dir
-  cat <<EOF > $profile_file
-[ -z \$FB_NAME ] && export FB_NAME=$FB_NAME
-[ -z \$FIREBASE_URL ] && export FIREBASE_URL=$FIREBASE_URL
-[ -z \$FIREBASE_AUTH_SECRET ] && export FIREBASE_AUTH_SECRET=${FIREBASE_AUTH_SECRET-}
-EOF
+  echo "export FB_NAME=\${FB_NAME:-$FB_NAME}" > $profile_file
+  echo "export FIREBASE_URL=\${FIREBASE_URL:-$FIREBASE_URL}" >> $profile_file
+  echo "export FIREBASE_AUTH_SECRET=\${FIREBASE_AUTH_SECRET:-$FIREBASE_AUTH_SECRET}" >> $profile_file
 }

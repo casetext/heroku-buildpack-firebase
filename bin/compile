@@ -67,6 +67,9 @@ else
 
   header "Writing profile"
   write_profile $BUILD_DIR
+  header "Saving profile to cache"
+  mkdir -p "${CACHE_DIR}/firebase"
+  cp "${BUILD_DIR}/.profile.d/firebase.sh" "${CACHE_DIR}/firebase/profile.sh"
 
 fi
 
