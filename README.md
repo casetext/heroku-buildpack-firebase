@@ -5,22 +5,22 @@ This is an unofficial buildpack to automatically provision Firebase instances fo
 ## Usage
 
 1. Add this buildpack to an existing Heroku app:
-```bash
-# "-i 1" inserts this buildpack as the first buildpack to run, so that your
-# Firebase is guaranteed to be available by the time your normal buildpack runs.
-$ heroku buildpacks:add -i 1 https://github.com/casetext/heroku-buildpack-firebase \
-  --app <your-app-name>
-```
+  ```bash
+  # "-i 1" inserts this buildpack as the first buildpack to run, so that your
+  # Firebase is guaranteed to be available by the time your normal buildpack runs.
+  $ heroku buildpacks:add -i 1 https://github.com/casetext/heroku-buildpack-firebase \
+    --app <your-app-name>
+  ```
 
 2. Set the config vars `FIREBASE_ADMIN_USER` and `FIREBASE_ADMIN_PASS` to a valid
 set of login credentials to Firebase.
 
 3. Build your app as usual. When your buildpack runs, there will now be three
 environment variables set:
-- `FB_NAME`: the randomly-chosen name of the Firebase, like `few-melodic-winter`
-- `FIREBASE_URL`: the hostname of the Firebase, like `few-melodic-winter.firebaseio.com`
-- `FIREBASE_AUTH_SECRET`: an authentication secret for the Firebase that you can
-use to generate JWTs of your own or just on its own as an administrative credential.
+  - `FB_NAME`: the randomly-chosen name of the Firebase, like `few-melodic-winter`
+  - `FIREBASE_URL`: the hostname of the Firebase, like `few-melodic-winter.firebaseio.com`
+  - `FIREBASE_AUTH_SECRET`: an authentication secret for the Firebase that you can
+  use to generate JWTs of your own or just on its own as an administrative credential.
 
 ## Custom auth config
 
@@ -59,7 +59,7 @@ you need.
     "enabled": false,
     "emails": {
       "password-reset": {
-        "from": "@asdfasdfadsfasdfasdf.firebaseapp.com",
+        "from": "@<YOUR_FIREBASE_NAME>.firebaseapp.com",
         "fromname": "",
         "replyto": "",
         "subject": "",
