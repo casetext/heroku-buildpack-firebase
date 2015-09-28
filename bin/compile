@@ -41,9 +41,7 @@ export_env_dir $ENV_DIR
 if [ -n "${FIREBASE_URL-}" ]; then
   info "FIREBASE_URL is already set, nothing to do."
 elif [ -f "${CACHE_DIR}/firebase/profile.sh" ]; then
-  info "We already made a Firebase for this app; restoring .profile.d/firebase.sh"
-  mkdir -p "${BUILD_DIR}/.profile.d"
-  cp "${CACHE_DIR}/firebase/profile.sh" "${BUILD_DIR}/.profile.d/firebase.sh"
+  info "We already made a Firebase for this app"
   source "${BUILD_DIR}/.profile.d/firebase.sh"
 else
 
@@ -65,17 +63,28 @@ else
   FIREBASE_PERSONAL_TOKEN=`get_firebase_personal_token $FIREBASE_ADMIN_TOKEN $FB_NAME`
   export FIREBASE_AUTH_SECRET=`get_firebase_custom_auth_token $FIREBASE_PERSONAL_TOKEN $FB_NAME`
 
-  header "Writing profile"
-  write_profile $BUILD_DIR
-  header "Saving profile to cache"
-  mkdir -p "${CACHE_DIR}/firebase"
-  cp "${BUILD_DIR}/.profile.d/firebase.sh" "${CACHE_DIR}/firebase/profile.sh"
-
 fi
+
+
+header "Writing profile data"
+
+# profile itself
+profile_dir=$BUILD_DIR/.profile.d
+profile_file="$profile_dir/firebase.sh"
+mkdir -p "${profile_dir}"
+write_profile $profile_file
+
+# exports data, for other buildpacks
+export_file="$BP_DIR/export"
+write_profile $export_file
+
+mkdir -p "${CACHE_DIR}/firebase"
+cp "${BUILD_DIR}/.profile.d/firebase.sh" "${CACHE_DIR}/firebase/profile.sh"
 
 if [ -e "${BUILD_DIR}/firebase-config.json" ]; then
   header "Restoring auth config from firebase-config.json"
   set_firebase_auth_config $FIREBASE_ADMIN_TOKEN $FB_NAME "${BUILD_DIR}/firebase-config.json"
 fi
 
-header "This app will use Firebase $FIREBASE_URL."
+info "FB_NAME=${FB_NAME:-}"
+info "FIREBASE_URL=$FIREBASE_URL"

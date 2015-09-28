@@ -15,11 +15,8 @@ export_env_dir() {
 }
 
 write_profile() {
-  local build_dir="$1"
-  local profile_dir=$build_dir/.profile.d
-  local profile_file="$profile_dir/firebase.sh"
-  mkdir -p $profile_dir
-  echo "export FB_NAME=\${FB_NAME:-$FB_NAME}" > $profile_file
+  local profile_file="$1"
+  echo "export FB_NAME=\${FB_NAME:-${FB_NAME:-}}" > $profile_file
   echo "export FIREBASE_URL=\${FIREBASE_URL:-$FIREBASE_URL}" >> $profile_file
-  echo "export FIREBASE_AUTH_SECRET=\${FIREBASE_AUTH_SECRET:-$FIREBASE_AUTH_SECRET}" >> $profile_file
+  echo "export FIREBASE_AUTH_SECRET=\${FIREBASE_AUTH_SECRET:-${FIREBASE_AUTH_SECRET:-}}" >> $profile_file
 }
