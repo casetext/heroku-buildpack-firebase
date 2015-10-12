@@ -36,16 +36,19 @@ trap 'handle_failure' ERR
 
 export_env_dir $ENV_DIR
 
-### Compile
+### Get Firebase credentials
+header "Getting Firebase credentials"
 if [ -z "${FIREBASE_ADMIN_USER-}" ]; then
   echoerr "FIREBASE_ADMIN_USER is not present in this app's environment."
   exit 1
 elif [ -z "${FIREBASE_ADMIN_PASS-}" ]; then
   echoerr "FIREBASE_ADMIN_PASS is not present in this app's environment."
   exit 1
-elif [ -n "${FIREBASE_URL-}" ]; then
-  info "FIREBASE_URL is already set, nothing to do."
-elif [ -f "${CACHE_DIR}/firebase/profile.sh" ]; then
+fi
+FIREBASE_ADMIN_TOKEN=`get_firebase_admin_token $FIREBASE_ADMIN_USER $FIREBASE_ADMIN_PASS`
+
+### Compile
+if [ -f "${CACHE_DIR}/firebase/profile.sh" ]; then
   info "We already made a Firebase for this app, restoring..."
   source "${CACHE_DIR}/firebase/profile.sh"
 else
@@ -53,7 +56,6 @@ else
   export FB_NAME=`get_new_firebase_name`
 
   header "Creating new Firebase \"$FB_NAME\""
-  FIREBASE_ADMIN_TOKEN=`get_firebase_admin_token $FIREBASE_ADMIN_USER $FIREBASE_ADMIN_PASS`
   export FIREBASE_URL=`create_firebase $FIREBASE_ADMIN_TOKEN $FB_NAME`
 
   header "Getting auth secret for new Firebase \"$FB_NAME\""
