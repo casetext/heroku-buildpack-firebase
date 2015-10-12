@@ -1,5 +1,9 @@
 # Firebase Buildpack Changelog
 
+## v4 (2015-10-12)
+
+- Fixed a strange bug with credentials.
+
 ## v3 (2015-10-12)
 
 - Properly restore the old Firebase data when in the cache.
