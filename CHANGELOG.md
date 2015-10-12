@@ -1,5 +1,9 @@
 # Firebase Buildpack Changelog
 
+## v3 (2015-10-12)
+
+- Properly restore the old Firebase data when in the cache.
+
 ## v2 (2015-09-28)
 
 - Send Firebase environment variables to `$BP_DIR/export` for other buildpacks.

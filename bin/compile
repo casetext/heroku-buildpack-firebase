@@ -4,7 +4,7 @@
 ### Configure environment
 
 set -o errexit    # always exit on error
-set -o pipefail   # don't ignore exit codes when piping output
+set -o pipefail   # don\'t ignore exit codes when piping output
 set -o nounset    # fail on unset variables
 unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
 set -e
@@ -42,6 +42,7 @@ if [ -n "${FIREBASE_URL-}" ]; then
   info "FIREBASE_URL is already set, nothing to do."
 elif [ -f "${CACHE_DIR}/firebase/profile.sh" ]; then
   info "We already made a Firebase for this app"
+  cp "${CACHE_DIR}/firebase/profile.sh" "${BUILD_DIR}/.profile.d/firebase.sh"
   source "${BUILD_DIR}/.profile.d/firebase.sh"
 else
 
