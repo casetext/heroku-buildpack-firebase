@@ -49,8 +49,10 @@ FIREBASE_ADMIN_TOKEN=`get_firebase_admin_token $FIREBASE_ADMIN_USER $FIREBASE_AD
 
 ### Compile
 if [ -f "${CACHE_DIR}/firebase/profile.sh" ]; then
+
   info "We already made a Firebase for this app, restoring..."
   source "${CACHE_DIR}/firebase/profile.sh"
+
 else
 
   export FB_NAME=`get_new_firebase_name`
