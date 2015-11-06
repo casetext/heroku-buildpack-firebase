@@ -142,6 +142,7 @@ set_firebase_auth_config() {
   local error=`$JQ -rM .error?.message? $tmpfile`
   if [ "$error" != "null" ]; then
     echoerr "Error restoring auth config: $error"
+    echoerr "Actual return value: `cat $tmpfile`"
     return 1
   else
     return 0
