@@ -1,3 +1,9 @@
+# Abandoned
+
+With the rollout of the new Firebase console, this buildpack [no longer works](https://github.com/casetext/heroku-buildpack-firebase/issues/1).  We do not have any plans to continue supporting this repo.
+
+---
+
 # Heroku Buildpack for Firebase
 
 This is an unofficial buildpack to automatically provision Firebase instances for Heroku apps.
